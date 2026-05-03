@@ -39,8 +39,9 @@ jobs:
         chmod +x scripts/built_in_font/*.py
 
     - name: Make font directory
+      working-directory: ./scripts/built_in_font
       run: |
-        mkdir -p ./src/font
+        mkdir -p ../../src/font
 
     - name: Generate fonts
       working-directory: ./scripts/built_in_font
