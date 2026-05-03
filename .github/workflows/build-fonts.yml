@@ -26,8 +26,8 @@ jobs:
         run: |
           mkdir -p fonts
           curl -L \
-            -o fonts/Montserrat-Regular.ttf \
-            https://github.com/JulietaUla/Montserrat/raw/master/fonts/ttf/Montserrat-Regular.ttf
+            -o fonts/Montserrat-Medium.ttf \
+            https://github.com/JulietaUla/Montserrat/raw/master/fonts/ttf/Montserrat-Medium.ttf
 
       - name: Generate LVGL fonts
         run: |
@@ -36,11 +36,12 @@ jobs:
 
           for SIZE in 12 16 20 30; do
             npx lv_font_conv \
-              --font fonts/Montserrat-Regular.ttf \
+              --font fonts/Montserrat-Medium.ttf \
               --size ${SIZE} \
               --bpp 4 \
               --format lvgl \
               --force-fast-kern-format \
+              --no-compress \
               --no-prefilter \
               --range "${RANGE}" \
               --output "generated/montserrat_${SIZE}.c"

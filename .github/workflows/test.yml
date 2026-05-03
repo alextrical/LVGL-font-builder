@@ -1,0 +1,45 @@
+name: Generate LVGL Built-in Fonts
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/test.yml'
+
+jobs:
+  generate-fonts:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v6
+      with:
+        submodules: false  # Fonts are in repo
+
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.x'
+
+    - name: Install Python dependencies
+      run: |
+        pip install astyle
+
+    - name: Install lv_font_conv globally
+      run: |
+        npm install -g lv_font_conv
+
+    - name: Make scripts executable
+      run: |
+        chmod +x scripts/built_in_font/*.py
+
+    - name: Generate fonts
+      working-directory: ./scripts/built_in_font
+      run: |
+        python3 generate_all.py
+
+    # - name: Upload generated fonts
+    #   uses: actions/upload-artifact@v7
+    #   with:
+    #     name: lvgl-montserrat-fonts
+    #     path: generated/*.c
