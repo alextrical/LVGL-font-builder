@@ -25,18 +25,9 @@ jobs:
       run: |
         pip install astyle
 
-    - name: Install Node.js
-      uses: actions/setup-node@v6
-      with:
-        node-version: '24'
-
     - name: Install lv_font_conv globally
       run: |
         npm install -g lv_font_conv
-
-    - name: Make scripts executable
-      run: |
-        chmod +x scripts/built_in_font/*.py
 
     - name: Make font directory
       working-directory: ./scripts/built_in_font
@@ -48,20 +39,10 @@ jobs:
       run: |
         python3 generate_all.py
 
-    - name: Debug full directory listing
-      working-directory: ./scripts/built_in_font
-      run: |
-        pwd
-        ls -la ../../src/font/ || echo "No src/font"
-        ls -la ./
-        find ../ -name "lv_font*.c" 2>/dev/null || echo "No font files found"
-
     - name: Upload generated fonts
       uses: actions/upload-artifact@v7
       with:
-        name: lvgl-built-in-fonts
+        name: lvgl-fonts
         path: |
-          scripts/built_in_font/*.c
           src/font/*.c
-          lvgl/src/font/*.c
         retention-days: 7
