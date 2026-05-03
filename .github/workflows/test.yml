@@ -40,7 +40,7 @@ jobs:
 
     - name: Make font directory
       run: |
-        mkdir -p src/font
+        mkdir -p ./src/font
 
     - name: Generate fonts
       working-directory: ./scripts/built_in_font
@@ -51,7 +51,7 @@ jobs:
       working-directory: ./scripts/built_in_font
       run: |
         pwd
-        ls -la ../src/font/ || echo "No src/font"
+        ls -la ./src/font/ || echo "No src/font"
         ls -la ./
         find ../ -name "lv_font*.c" 2>/dev/null || echo "No font files found"
 
