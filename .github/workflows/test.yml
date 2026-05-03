@@ -38,8 +38,14 @@ jobs:
       run: |
         python3 generate_all.py
 
-    # - name: Upload generated fonts
-    #   uses: actions/upload-artifact@v7
-    #   with:
-    #     name: lvgl-montserrat-fonts
-    #     path: generated/*.c
+    - name: List generated files
+      run: |
+        find .. -name "lv_font_montserrat_*.c" -o -name "lv_font_simsun_*.c"
+
+    - name: Upload generated fonts
+      uses: actions/upload-artifact@v7
+      with:
+        name: lvgl-built-in-fonts
+        path: |
+          src/font/lv_font_montserrat_*.c
+          src/font/lv_font_simsun_*.c
