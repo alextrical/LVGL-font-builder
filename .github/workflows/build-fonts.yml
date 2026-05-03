@@ -1,54 +1,50 @@
-name: Build LVGL Montserrat Fonts
+name: Generate LVGL Built-in Fonts
 
 on:
   workflow_dispatch:
   push:
     paths:
       - '.github/workflows/build-fonts.yml'
+      - 'scripts/built_in_font_gen.py'
+      - 'scripts/generate_all.py'
 
 jobs:
-  build-fonts:
+  generate-fonts:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+    - name: Checkout repository
+      uses: actions/checkout@v6
+      with:
+        submodules: false  # Fonts are in repo
 
-      - name: Install Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '24'
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
 
-      # - name: Install lv_font_conv
-      #   run: npm i lvgl/lv_font_conv -g
+    - name: Install Python dependencies
+      run: |
+        pip install astyle
 
-      - name: Download Montserrat font
-        run: |
-          mkdir -p fonts
-          curl -L \
-            -o fonts/Montserrat-Medium.ttf \
-            https://github.com/JulietaUla/Montserrat/raw/master/fonts/ttf/Montserrat-Medium.ttf
+    - name: Install lv_font_conv globally
+      run: |
+        npm install -g lv_font_conv
 
-      - name: Generate LVGL fonts
-        run: |
-          mkdir -p generated
-          RANGE="0x20-0x7F,0xC4,0xD6,0xDC,0xE4,0xF6,0xFC,0xDF"
+    - name: Make font directory
+      working-directory: ./scripts/built_in_font
+      run: |
+        mkdir -p ../../src/font
 
-          for SIZE in 12 16 20 30; do
-            npx lv_font_conv \
-              --font fonts/Montserrat-Medium.ttf \
-              --size ${SIZE} \
-              --bpp 4 \
-              --format lvgl \
-              --force-fast-kern-format \
-              --no-compress \
-              --no-prefilter \
-              --range "${RANGE}" \
-              --output "generated/montserrat_${SIZE}.c"
-          done
+    - name: Generate fonts
+      working-directory: ./scripts/built_in_font
+      run: |
+        python3 generate_all.py
 
-      - name: Upload generated fonts
-        uses: actions/upload-artifact@v7
-        with:
-          name: lvgl-montserrat-fonts
-          path: generated/*.c
+    - name: Upload generated fonts
+      uses: actions/upload-artifact@v7
+      with:
+        name: lvgl-fonts
+        path: |
+          src/font/*.c
+        retention-days: 7
