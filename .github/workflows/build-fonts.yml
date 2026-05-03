@@ -1,0 +1,53 @@
+name: Build LVGL Montserrat Fonts
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/build-fonts.yml'
+
+jobs:
+  build-fonts:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Install lv_font_conv
+        run: npm i lvgl/lv_font_conv -g
+
+      - name: Download Montserrat font
+        run: |
+          mkdir -p fonts
+          curl -L \
+            -o fonts/Montserrat-Regular.ttf \
+            https://github.com/JulietaUla/Montserrat/raw/master/fonts/ttf/Montserrat-Regular.ttf
+
+      - name: Generate LVGL fonts
+        run: |
+          mkdir -p generated
+          RANGE="0x20-0x7F,0xC4,0xD6,0xDC,0xE4,0xF6,0xFC,0xDF"
+
+          for SIZE in 12 16 20 30; do
+            lv_font_conv \
+              --font fonts/Montserrat-Regular.ttf \
+              --size ${SIZE} \
+              --bpp 4 \
+              --format lvgl \
+              --force-fast-kern-format \
+              --no-prefilter \
+              --range "${RANGE}" \
+              --output "generated/montserrat_${SIZE}.c"
+          done
+
+      - name: Upload generated fonts
+        uses: actions/upload-artifact@v7
+        with:
+          name: lvgl-montserrat-fonts
+          path: generated/*.c
