@@ -38,14 +38,20 @@ jobs:
       run: |
         python3 generate_all.py
 
-    - name: List generated files
+    - name: Debug full directory listing
+      working-directory: ./scripts/built_in_font
       run: |
-        find .. -name "lv_font_montserrat_*.c" -o -name "lv_font_simsun_*.c"
+        pwd
+        ls -la ../src/font/ || echo "No src/font"
+        ls -la ./
+        find ../ -name "lv_font*.c" 2>/dev/null || echo "No font files found"
 
     - name: Upload generated fonts
       uses: actions/upload-artifact@v7
       with:
         name: lvgl-built-in-fonts
         path: |
-          src/font/lv_font_montserrat_*.c
-          src/font/lv_font_simsun_*.c
+          scripts/built_in_font/*.c
+          src/font/*.c
+          lvgl/src/font/*.c
+        retention-days: 7
