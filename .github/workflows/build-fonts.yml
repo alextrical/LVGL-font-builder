@@ -19,8 +19,8 @@ jobs:
         with:
           node-version: '24'
 
-      - name: Install lv_font_conv
-        run: npm i lvgl/lv_font_conv -g
+      # - name: Install lv_font_conv
+      #   run: npm i lvgl/lv_font_conv -g
 
       - name: Download Montserrat font
         run: |
@@ -35,7 +35,7 @@ jobs:
           RANGE="0x20-0x7F,0xC4,0xD6,0xDC,0xE4,0xF6,0xFC,0xDF"
 
           for SIZE in 12 16 20 30; do
-            lv_font_conv \
+            npx lv_font_conv \
               --font fonts/Montserrat-Regular.ttf \
               --size ${SIZE} \
               --bpp 4 \
