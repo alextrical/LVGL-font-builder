@@ -5,8 +5,7 @@ on:
   push:
     paths:
       - '.github/workflows/build-fonts.yml'
-      - 'scripts/built_in_font_gen.py'
-      - 'scripts/generate_all.py'
+      - 'scripts/built_in_font/**'
 
 jobs:
   generate-fonts:
