@@ -4,7 +4,9 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - '.github/workflows/test.yml'
+      - '.github/workflows/build-fonts.yml'
+      - 'scripts/built_in_font_gen.py'
+      - 'scripts/generate_all.py'
 
 jobs:
   generate-fonts:
